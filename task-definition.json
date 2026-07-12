@@ -18,7 +18,8 @@
         { "name": "DB_HOST", "value": "cinetrack-db.co3ak6osqv2m.us-east-1.rds.amazonaws.com" },
         { "name": "DB_PORT", "value": "5432" },
         { "name": "DB_USER", "value": "cinetrack_user" },
-        { "name": "DB_NAME", "value": "cinetrack_db" }
+        { "name": "DB_NAME", "value": "cinetrack_db" },
+        { "name": "DB_SSL", "value": "true" }
       ],
       "secrets": [
         { "name": "DB_PASSWORD", "valueFrom": "arn:aws:ssm:us-east-1:483528440029:parameter/cinetrack/db_password" },
