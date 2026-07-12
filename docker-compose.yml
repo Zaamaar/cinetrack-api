@@ -1,0 +1,37 @@
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: cinetrack_user
+      DB_PASSWORD: ${DB_PASSWORD:-localdevpassword}
+      DB_NAME: cinetrack_db
+      JWT_SECRET: ${JWT_SECRET:-localdevsecret}
+      PORT: 3000
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: cinetrack_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-localdevpassword}
+      POSTGRES_DB: cinetrack_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./src/models/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cinetrack_user -d cinetrack_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
