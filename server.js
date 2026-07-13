@@ -9,7 +9,21 @@ const watchlistRoutes = require('./src/routes/watchlist');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+const allowedOrigins = [
+  'https://tubular-kulfi-31551c.netlify.app',
+  'https://cinetrack.hngayotomiwa.online'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
+
 app.use(express.json());
 
 app.get('/health', (req, res) => {
