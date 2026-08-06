@@ -1,4 +1,5 @@
-const { Pool } = require('pg');
+const AWSXRay = require('aws-xray-sdk');
+const { Pool } = AWSXRay.capturePostgres(require('pg'));
 
 const pool = new Pool({
   host: process.env.DB_HOST || 'localhost',

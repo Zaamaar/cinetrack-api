@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const AWSXRay = require('aws-xray-sdk');
 
 const authRoutes = require('./src/routes/auth');
 const movieRoutes = require('./src/routes/movies');
@@ -8,6 +9,8 @@ const watchlistRoutes = require('./src/routes/watchlist');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+AWSXRay.config([AWSXRay.plugins.ECSPlugin]);
 
 const allowedOrigins = [
   'https://tubular-kulfi-31551c.netlify.app',
@@ -26,6 +29,8 @@ app.use(cors({
 
 app.use(express.json());
 
+app.use(AWSXRay.express.openSegment('cinetrack-api'));
+
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', service: 'cinetrack-api' });
 });
@@ -42,6 +47,8 @@ app.use((err, req, res, next) => {
   console.error('Unhandled error:', err);
   res.status(500).json({ error: 'Internal server error' });
 });
+
+app.use(AWSXRay.express.closeSegment());
 
 app.listen(PORT, () => {
   console.log(`CineTrack API running on port ${PORT}`);
