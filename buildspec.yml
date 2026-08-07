@@ -33,7 +33,7 @@ phases:
       - sed -i "s|483528440029.dkr.ecr.us-east-1.amazonaws.com/cinetrack-api:latest|$REPOSITORY_URI:$IMAGE_TAG|g" task-definition.json
       - NEW_TASK_DEF_ARN=$(aws ecs register-task-definition --cli-input-json file://task-definition.json --query 'taskDefinition.taskDefinitionArn' --output text)
       - echo Registered new task definition $NEW_TASK_DEF_ARN
-      - aws ecs update-service --cluster cinetrack-cluster --service cinetrack-service --task-definition $NEW_TASK_DEF_ARN --force-new-deployment
+      - aws ecs update-service --cluster cinetrack-cluster --service cinetrack-service --task-definition $NEW_TASK_DEF_ARN --force-new-deployment --deployment-configuration "minimumHealthyPercent=0,maximumPercent=200"
       - echo Deploy triggered successfully
       - printf '[{"name":"cinetrack-api","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
 
