@@ -1,163 +1,51 @@
-
 {
-
   "family": "cinetrack-api",
-
   "networkMode": "awsvpc",
-
-  "requiresCompatibilities": [
-
-    "FARGATE"
-
-  ],
-
+  "requiresCompatibilities": ["FARGATE"],
   "cpu": "256",
-
   "memory": "512",
-
   "executionRoleArn": "arn:aws:iam::483528440029:role/cinetrackTaskExecutionRole",
-
+  "taskRoleArn": "arn:aws:iam::483528440029:role/cinetrackTaskRole",
   "containerDefinitions": [
-
     {
-
       "name": "cinetrack-api",
-
       "image": "483528440029.dkr.ecr.us-east-1.amazonaws.com/cinetrack-api:latest",
-
-      "portMappings": [
-
-        {
-
-          "containerPort": 3000,
-
-          "protocol": "tcp"
-
-        }
-
-      ],
-
+      "portMappings": [{ "containerPort": 3000, "protocol": "tcp" }],
       "essential": true,
-
       "environment": [
-
-        {
-
-          "name": "PORT",
-
-          "value": "3000"
-
-        }
-
+        { "name": "PORT", "value": "3000" }
       ],
-
       "secrets": [
-
-        {
-
-          "name": "DB_PASSWORD",
-
-          "valueFrom": "arn:aws:ssm:us-east-1:483528440029:parameter/cinetrack/db_password"
-
-        },
-
-        {
-
-          "name": "JWT_SECRET",
-
-          "valueFrom": "arn:aws:ssm:us-east-1:483528440029:parameter/cinetrack/jwt_secret"
-
-        },
-
-        {
-
-          "name": "DB_HOST",
-
-          "valueFrom": "arn:aws:ssm:us-east-1:483528440029:parameter/cinetrack/db_host"
-
-        },
-
-        {
-
-          "name": "DB_PORT",
-
-          "valueFrom": "arn:aws:ssm:us-east-1:483528440029:parameter/cinetrack/db_port"
-
-        },
-
-        {
-
-          "name": "DB_USER",
-
-          "valueFrom": "arn:aws:ssm:us-east-1:483528440029:parameter/cinetrack/db_user"
-
-        },
-
-        {
-
-          "name": "DB_NAME",
-
-          "valueFrom": "arn:aws:ssm:us-east-1:483528440029:parameter/cinetrack/db_name"
-
-        },
-
-        {
-
-          "name": "DB_SSL",
-
-          "valueFrom": "arn:aws:ssm:us-east-1:483528440029:parameter/cinetrack/db_ssl"
-
-        }
-
+        { "name": "DB_PASSWORD", "valueFrom": "arn:aws:ssm:us-east-1:483528440029:parameter/cinetrack/db_password" },
+        { "name": "JWT_SECRET", "valueFrom": "arn:aws:ssm:us-east-1:483528440029:parameter/cinetrack/jwt_secret" },
+        { "name": "DB_HOST", "valueFrom": "arn:aws:ssm:us-east-1:483528440029:parameter/cinetrack/db_host" },
+        { "name": "DB_PORT", "valueFrom": "arn:aws:ssm:us-east-1:483528440029:parameter/cinetrack/db_port" },
+        { "name": "DB_USER", "valueFrom": "arn:aws:ssm:us-east-1:483528440029:parameter/cinetrack/db_user" },
+        { "name": "DB_NAME", "valueFrom": "arn:aws:ssm:us-east-1:483528440029:parameter/cinetrack/db_name" },
+        { "name": "DB_SSL", "valueFrom": "arn:aws:ssm:us-east-1:483528440029:parameter/cinetrack/db_ssl" }
       ],
-
       "logConfiguration": {
-
         "logDriver": "awslogs",
-
         "options": {
-
           "awslogs-group": "/ecs/cinetrack-api",
-
           "awslogs-region": "us-east-1",
-
           "awslogs-stream-prefix": "ecs"
-
         }
-
       }
-
     },
-
     {
-
       "name": "xray-daemon",
-
-      "image": "amazon/aws-xray-daemon",
-
-      "cpu": 32,
-
-      "memoryReservation": 256,
-
-      "portMappings": [
-
-        {
-
-          "containerPort": 2000,
-
-          "protocol": "udp"
-
+      "image": "public.ecr.aws/xray/aws-xray-daemon:latest",
+      "essential": true,
+      "portMappings": [{ "containerPort": 2000, "protocol": "udp" }],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/cinetrack-api",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "xray"
         }
-
-      ],
-
-      "essential": false
-
+      }
     }
-
-  ],
-
-  "taskRoleArn": "arn:aws:iam::483528440029:role/cinetrackTaskRole"
-
+  ]
 }
-

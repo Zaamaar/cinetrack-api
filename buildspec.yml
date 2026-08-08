@@ -29,8 +29,10 @@ phases:
       - echo Pushing the Docker image...
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - printf '[{"name":"cinetrack-api","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      - echo Substituting image tag into task definition...
+      - sed -i "s|483528440029.dkr.ecr.us-east-1.amazonaws.com/cinetrack-api:latest|$REPOSITORY_URI:$IMAGE_TAG|g" task-definition.json
 
 artifacts:
   files:
-    - imagedefinitions.json
+    - task-definition.json
+    - appspec.yaml
