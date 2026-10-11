@@ -30,7 +30,7 @@ phases:
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Substituting image tag into task definition...
-      - sed -i "s|483528440029.dkr.ecr.us-east-1.amazonaws.com/cinetrack-api:latest|$REPOSITORY_URI:$IMAGE_TAG|g" task-definition.json
+      - sed -i "s|822341541377.dkr.ecr.us-east-1.amazonaws.com/cinetrack-api:latest|$REPOSITORY_URI:$IMAGE_TAG|g" task-definition.json
 
 artifacts:
   files:
